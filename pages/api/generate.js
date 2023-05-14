@@ -1,7 +1,7 @@
 import { Configuration, OpenAIApi } from "openai";
 
 const configuration = new Configuration({
-  apiKey: process.env.OPENAI_API_KEY,
+  apiKey: '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',
 });
 const openai = new OpenAIApi(configuration);
 
@@ -15,8 +15,8 @@ export default async function (req, res) {
     return;
   }
 
-  const animal = req.body.animal || '';
-  if (animal.trim().length === 0) {
+  const CaptionPrompt = req.body.CaptionPrompt || '';
+  if (CaptionPrompt.trim().length === 0) {
     res.status(400).json({
       error: {
         message: "Please enter a valid animal",
@@ -28,9 +28,11 @@ export default async function (req, res) {
   try {
     const completion = await openai.createCompletion({
       model: "text-davinci-003",
-      prompt: generatePrompt(animal),
+      prompt: CaptionPrompt,
+      max_tokens: 2048,
       temperature: 0.6,
     });
+    console.log(completion.data.choices[0].text);
     res.status(200).json({ result: completion.data.choices[0].text });
   } catch(error) {
     // Consider adjusting the error handling logic for your use case
@@ -47,7 +49,7 @@ export default async function (req, res) {
     }
   }
 }
-
+/*
 function generatePrompt(animal) {
   const capitalizedAnimal =
     animal[0].toUpperCase() + animal.slice(1).toLowerCase();
@@ -59,4 +61,4 @@ Animal: Dog
 Names: Ruff the Protector, Wonder Canine, Sir Barks-a-Lot
 Animal: ${capitalizedAnimal}
 Names:`;
-}
+}*/
